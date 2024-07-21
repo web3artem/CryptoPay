@@ -6,4 +6,4 @@ app = FastAPI()
 
 @app.get("/v1/status")
 async def get_status():
-    print(settings.DATABASE_URL)
+    print(settings.DB_HOST)
