@@ -13,8 +13,8 @@ env.bak/
 venv.bak/
 
 # Alembic
-alembic.ini
-alembic/versions/
+src/alembic.ini
+src/alembic/versions/
 
 # PyCharm specific
 .idea/
