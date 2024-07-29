@@ -23,6 +23,7 @@ config.set_main_option("sqlalchemy.url", settings.DATABASE_URL + "?async_fallbac
 # add your model's MetaData object here
 # for 'autogenerate' support
 from auth.models import User, Base # noqa
+from currency.models import Currency # noqa
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
