@@ -11,7 +11,6 @@ from config import settings
 # access to the values within the .ini file in use.
 config = context.config
 
-
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
@@ -19,12 +18,14 @@ if config.config_file_name is not None:
 
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL + "?async_fallback=True")
 
-
 # add your model's MetaData object here
 # for 'autogenerate' support
-from auth.models import User, Base # noqa
-from currency.models import Currency # noqa
+from auth.models import User, Base  # noqa
+from currency.models import Currency  # noqa
+from payment.models import Payment  # noqa
+
 target_metadata = Base.metadata
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

@@ -4,6 +4,7 @@ from auth.auth import auth_backend
 from auth.schemas import UserRead, UserCreate
 from auth.routes import fastapi_users, router as auth_router
 from currency.routes import router as currency_router
+from payment.routes import router as payment_router
 
 app = FastAPI()
 
@@ -21,6 +22,7 @@ app.include_router(
 )
 app.include_router(auth_router)
 app.include_router(currency_router)
+app.include_router(payment_router)
 
 
 @app.get("/v1/status")

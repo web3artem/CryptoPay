@@ -1,15 +1,13 @@
 import httpx
-
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from currency.models import Currency
-
-from database import get_async_session
 from auth.models import User
 from auth.routes import fastapi_users
+from currency.models import Currency
+from database import get_async_session
 
 router = APIRouter(
     tags=['currency']
@@ -25,7 +23,7 @@ async def get_currencies(db: AsyncSession = Depends(get_async_session)):
 
 
 @router.get("/estimate", description="Метод для получения приблизительной цены в криптовалюте для фиатной валюты")
-async def convert_fiat_to_crypto(amount: int,
+async def convert_fiat_to_crypto(amount: int | float,
                                  currency_from: str,
                                  currency_to: str,
                                  user: User = Depends(fastapi_users.current_user())):

@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     DB_PORT: int
     DB_NAME: str
     SECRET: str
+    POSTGRES_PASSWORD: str
+    REDIS_HOST: str
+    CELERY_BROKER_URL: str
+    CELERY_RESULT_BACKEND: str
 
     @property
     def DATABASE_URL(self):
