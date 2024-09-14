@@ -14,8 +14,12 @@ class Settings(BaseSettings):
     CELERY_RESULT_BACKEND: str
 
     @property
-    def DATABASE_URL(self):
+    def ASYNC_DATABASE_URL(self):
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+
+    @property
+    def SYNC_DATABASE_URL(self):
+        return f"postgresql+psycopg2://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     model_config = SettingsConfigDict(env_file="../.env")
 
