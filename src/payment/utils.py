@@ -11,7 +11,7 @@ class BlockchainNode:
         match self.blockchain:
             case "ethereum":
                 # return "wss://ethereum-rpc.publicnode.com" - основная
-                return "wss://ethereum-sepolia-rpc.publicnode.com"
+                return "https://ethereum-sepolia.blockpi.network/v1/rpc/public"
             case "arbitrum":
                 return "https://arbitrum-sepolia.blockpi.network/v1/rpc/public"
                 # https://arb-mainnet-public.unifra.io - основная

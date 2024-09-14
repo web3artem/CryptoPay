@@ -1,14 +1,16 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
 
 from auth.models import User
 from auth.routes import fastapi_users
 from currency.routes import convert_fiat_to_crypto
-from database import get_async_session
+from database import get_async_session, get_sync_session
 from .models import Payment
 from .schemas import PaymentCreation, PaymentStatus, PaymentResponse
-from .services import create_wallet, check_ticker_availability
+from .services import create_wallet
+
+from tasks.tasks import check_payment
 
 router = APIRouter(
     prefix="",
@@ -52,11 +54,16 @@ async def create_payment(payment: PaymentCreation,
         wallet_key=wallet.address,
         wallet_pk=wallet.key.hex(),
         user_id=user.id
-
     )
+
     async with db as session:
         session.add(new_payment)
         await session.commit()
+
+    check_payment.delay(blockchain=payment.blockchain,
+                        payment_id=new_payment.id,
+                        wallet_address=new_payment.wallet_key,
+                        pay_amount=new_payment.pay_amount)
 
     return PaymentResponse(
         payment_id=new_payment.id,

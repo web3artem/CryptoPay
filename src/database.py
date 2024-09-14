@@ -1,4 +1,5 @@
 from typing import AsyncGenerator, Generator
+from contextlib import contextmanager
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
@@ -8,11 +9,11 @@ from config import settings
 
 DATABASE_URL = settings.ASYNC_DATABASE_URL
 
-async_engine = create_async_engine(settings.ASYNC_DATABASE_URL)
-async_session_maker = async_sessionmaker(async_engine, expire_on_commit=False)
+_async_engine = create_async_engine(settings.ASYNC_DATABASE_URL)
+_async_session_maker = async_sessionmaker(_async_engine, expire_on_commit=False)
 
-sync_engine = create_engine(settings.SYNC_DATABASE_URL)
-sync_session_maker = sessionmaker(bind=sync_engine)
+_sync_engine = create_engine(settings.SYNC_DATABASE_URL)
+_sync_session_maker = sessionmaker(bind=_sync_engine)
 
 
 class Base(DeclarativeBase):
@@ -20,12 +21,13 @@ class Base(DeclarativeBase):
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_maker() as session:
+    async with _async_session_maker() as session:
         yield session
 
 
-async def get_sync_session() -> Generator[Session, None, None]:
-    session = sync_session_maker()
+@contextmanager
+def get_sync_session() -> Generator[Session, None, None]:
+    session = _sync_session_maker()
     try:
         yield session
     finally:

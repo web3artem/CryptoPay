@@ -1,8 +1,16 @@
+from datetime import datetime, timedelta
+from time import sleep
+from decimal import Decimal, getcontext
+
 from celery import Celery
 
-from eth_account import Account
+from sqlalchemy import update
 
 from config import settings
+from auth.models import User # noqa
+from payment.models import Payment
+from payment.utils import BlockchainNode
+
 from database import get_sync_session
 
 celery = Celery('tasks',
@@ -10,7 +18,40 @@ celery = Celery('tasks',
                 backend=settings.CELERY_RESULT_BACKEND)
 
 
-# @celery.task
-# async def create_wallet():
-#     wallet = Account.create()
-#     with get_sync_session() as session:
+@celery.task
+def check_payment(blockchain: str,
+                  payment_id: int,
+                  wallet_address: str,
+                  pay_amount: float):
+    node = BlockchainNode(blockchain).get_web3_instance()
+    getcontext().prec = 18
+
+    start_time = datetime.now()
+    end_time = start_time + timedelta(minutes=5)
+
+    while datetime.now() <= end_time:
+        wei_balance = node.eth.get_balance(wallet_address)
+        ether_balance = Decimal(node.from_wei(wei_balance, 'ether'))
+        print(f"Баланс кошелька {wallet_address} - {ether_balance}")
+        print(f"Заплатить нужно - {pay_amount}")
+        if ether_balance >= Decimal(pay_amount):
+            with get_sync_session() as session:
+                stmt = (
+                    update(Payment)
+                    .where(Payment.id == payment_id)
+                    .values(payment_status="confirmed")
+                )
+                session.execute(stmt)
+                session.commit()
+                return "Платеж выполнен успешно"
+        sleep(5)
+
+    with get_sync_session() as session:
+        stmt = (
+            update(Payment)
+            .where(Payment.id == payment_id)
+            .values(payment_status="expired")
+        )
+        session.execute(stmt)
+        session.commit()
+        return "Платеж не выполнен"
