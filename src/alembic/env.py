@@ -22,7 +22,7 @@ config.set_main_option("sqlalchemy.url", settings.ASYNC_DATABASE_URL + "?async_f
 # for 'autogenerate' support
 from auth.models import User, Base  # noqa
 from currency.models import Currency  # noqa
-from payment.models import Payment  # noqa
+from payment.models import Payment, Wallet  # noqa
 
 target_metadata = Base.metadata
 
