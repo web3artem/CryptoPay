@@ -27,13 +27,11 @@ def check_payment(blockchain: str,
     getcontext().prec = 18
 
     start_time = datetime.now()
-    end_time = start_time + timedelta(minutes=5)
+    end_time = start_time + timedelta(seconds=10)
 
     while datetime.now() <= end_time:
         wei_balance = node.eth.get_balance(wallet_address)
         ether_balance = Decimal(node.from_wei(wei_balance, 'ether'))
-        print(f"Баланс кошелька {wallet_address} - {ether_balance}")
-        print(f"Заплатить нужно - {pay_amount}")
         if ether_balance >= Decimal(pay_amount):
             with get_sync_session() as session:
                 stmt = (

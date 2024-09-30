@@ -13,10 +13,10 @@ class BlockchainNode:
                 # return "wss://ethereum-rpc.publicnode.com" - основная
                 return "https://ethereum-sepolia.blockpi.network/v1/rpc/public"
             case "arbitrum":
-                return "https://arbitrum-sepolia.blockpi.network/v1/rpc/public"
+                return "https://1rpc.io/arb"
                 # https://arb-mainnet-public.unifra.io - основная
             case "optimism":
-                return "wss://optimism-rpc.publicnode.com"
+                return "https://optimism.llamarpc.com"
             case _:
                 raise ValueError("Unsupported blockchain")
 

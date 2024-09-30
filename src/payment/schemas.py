@@ -39,3 +39,11 @@ class PaymentResponse(BaseModel):
     updated_at: datetime
 
 
+class GetPaymentStatusResponse(BaseModel):
+    payment_id: int
+    payment_status: PaymentStatus
+    pay_address: str
+    price_amount: float
+    price_currency: str
+    pay_amount: float
+    pay_currency: str
